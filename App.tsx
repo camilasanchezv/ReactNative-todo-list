@@ -3,14 +3,21 @@ import { Keyboard, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput
 
 import Task from './components/Task'
 
+declare global {
+  interface TaskType{
+    text: string,
+    completed: boolean
+  }
+}
+
 export default function App() {
   const [task, setTask] = useState('');
-  const [list, setList] = useState<string[]>([]);
+  const [list, setList] = useState<TaskType[]>([]);
 
   const handleAddTask = () => {
     if (task) {
       Keyboard.dismiss();
-      setList([...list, task]);
+      setList([...list, {text: task, completed: false}]);
       setTask('');
     }
   }
@@ -21,7 +28,7 @@ export default function App() {
         All Tasks
       </Text>
       <ScrollView>
-        {list.map((task, index) => <Task key={index + task} text={task} id={index} allTasks={list} setTasks={setList}/>)}
+        {list.map((task, index) => <Task key={index + task.text} task={task} id={index} allTasks={list} setTasks={setList}/>)}
       </ScrollView>
       <KeyboardAvoidingView style={styles.newTaskContainer}>
         <TextInput style={styles.input} placeholder="New task" value={task} onChangeText={text => setTask(text)} />

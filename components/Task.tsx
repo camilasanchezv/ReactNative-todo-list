@@ -2,14 +2,24 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface propsType {
-    text: string,
+    task: TaskType,
     id: number,
-    allTasks: string[],
-    setTasks: React.Dispatch<React.SetStateAction<string[]>>
+    allTasks: TaskType[],
+    setTasks: React.Dispatch<React.SetStateAction<TaskType[]>>
 }
 
-const Task = ({ text, id, allTasks, setTasks }: propsType) => {
-    const [completed, setCompleted] = useState(false);
+const Task = ({ task, id, allTasks, setTasks }: propsType) => {
+    
+    const handleComplete=()=>{
+        setTasks(allTasks.map((task, index)=>{
+            if (index != id)
+                return task
+            else return {
+                text: task.text,
+                completed: !task.completed
+            }
+        }))
+    }
 
     const handleDelete=()=>{
         setTasks(allTasks.filter((task, index)=>index != id))
@@ -18,10 +28,10 @@ const Task = ({ text, id, allTasks, setTasks }: propsType) => {
     return (
         <View style={styles.taskContainer}>
             <Text style={styles.task}>
-                {text}
+                {task.text}
             </Text>
-            <TouchableOpacity onPress={()=>setCompleted((prev)=>!prev)}>
-                <View style={completed ? styles.check : styles.uncheck}></View>
+            <TouchableOpacity onPress={handleComplete}>
+                <View style={task.completed ? styles.check : styles.uncheck}></View>
             </TouchableOpacity>
             <TouchableOpacity onPress={handleDelete}>
                 <Text style={styles.delete}>Delete</Text>
